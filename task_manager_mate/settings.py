@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # custom apps
+    "workers",
     # external apps
     "django_extensions",
     "debug_toolbar",
@@ -143,3 +145,5 @@ LOGGING = {
         },
     },
 }
+
+AUTH_USER_MODEL = "workers.Worker"
