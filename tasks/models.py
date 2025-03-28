@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import F
 from django.utils import timezone
 
 Worker = get_user_model()
@@ -33,7 +34,11 @@ class Task(models.Model):
 
     class Meta:
         default_related_name = "tasks"
-        ordering = ("is_completed", "deadline", "priority")
+        ordering = (
+            "is_completed",
+            F("deadline").asc(nulls_last=True),
+            "priority"
+        )
 
     def __str__(self):
         return f"{self.name} ({self.task_type})"
