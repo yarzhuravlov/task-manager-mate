@@ -26,3 +26,16 @@ class TaskForm(forms.ModelForm):
 class PartialTaskForm(TaskForm):
     class Meta(TaskForm.Meta):
         exclude = ("created_at", "is_completed", "description")
+
+
+class ChangeTaskIsCompletedForm(forms.Form):
+    is_completed = forms.BooleanField(
+        label="",
+        required=False,
+        widget=forms.CheckboxInput(attrs={
+            "submit": True
+        })
+    )
+    task_id = forms.IntegerField(
+        widget=forms.HiddenInput()
+    )

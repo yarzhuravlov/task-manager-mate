@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views import generic
 from django.views.generic.dates import timezone_today
 
-from tasks.forms import PartialTaskForm
+from tasks.forms import PartialTaskForm, ChangeTaskIsCompletedForm
 from tasks.models import Task
 
 
@@ -22,6 +22,14 @@ class TaskListView(generic.ListView):
                 "deadline": timezone_today()
             })
 
+        for task in context["task_list"]:
+            task.is_completed_form = ChangeTaskIsCompletedForm(
+                initial={
+                    "task_id": task.id,
+                    "is_completed": task.is_completed
+                }
+            )
+
         return context
 
     def post(self, request: HttpRequest, *args, **kwargs):
@@ -34,4 +42,11 @@ class TaskListView(generic.ListView):
                 self.task_form = task_form
                 return self.get(request, *args, **kwargs)
 
-        return redirect(reverse("task-list"))
+        if "is_completed_form" in request.POST:
+            Task.objects.filter(
+                pk=int(request.POST["task_id"])
+            ).update(
+                is_completed=request.POST["is_completed"] == "on"
+            )
+
+        return redirect(reverse("tasks:task-list"))
