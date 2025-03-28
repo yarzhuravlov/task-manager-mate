@@ -1,11 +1,31 @@
 {% extends 'base.html' %}
+{% load crispy_forms_filters %}
 
 {% block content %}
   <h1>Task list</h1>
   <div class="row align-left">
+    <div class="col-auto">
+      <div
+          class="card mb-4
+                 task-item-container
+                 task-form-container
+                 {{ task_form.is_bound|yesno:"border-danger," }}"
+      >
+        <form class="card-body" action="" method="POST" novalidate>
+          {% csrf_token %}
+          {{ task_form|crispy }}
+          <input
+              class="btn btn-primary"
+              type="submit"
+              name="task_form"
+              value="Add"
+          >
+        </form>
+      </div>
+    </div>
     {% for task in task_list %}
       <div class="col-auto">
-        <div class="card mb-4" style="width: 18rem;">
+        <div class="card mb-4 task-item-container">
           <div class="card-body">
             <h5 class="card-title"
                 style="height: 5rem">
