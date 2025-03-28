@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Task list</h1>
+  <div class="row align-left">
+    {% for task in task_list %}
+      <div class="col-auto">
+        <div class="card mb-4" style="width: 18rem;">
+          <div class="card-body">
+            <h5 class="card-title"
+                style="height: 5rem">
+              {{ task.name | truncatechars:60 }}
+            </h5>
+            <p
+                class="card-subtitle mb-2"
+                style="height: 1rem">
+              {% if task.deadline %}
+                {{ task.deadline }}
+              {% endif %}
+            </p>
+            <p class="card-text"
+               style="height: 5rem;">
+              {{ task.description | truncatechars:80 }}
+            </p>
+            <a href="#" class="card-link">Edit</a>
+            <a href="#" class="card-link">Delete</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
