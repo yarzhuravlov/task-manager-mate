@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -8,7 +9,7 @@ from tasks.forms import PartialTaskForm, ChangeTaskIsCompletedForm
 from tasks.models import Task
 
 
-class TaskListView(generic.ListView):
+class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
     paginate_by = 15
 
