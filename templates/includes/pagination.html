@@ -1,0 +1,28 @@
+{% load pagination_extras %}
+{% if is_paginated %}
+  {% register_pages_list %}
+  <nav aria-label="Page pagination">
+    <ul class="pagination justify-content-center">
+      <li class="page-item {{ page_obj.has_previous|yesno:",disabled" }}">
+        <a class="page-link"
+           href="?{% build_previous_query_params %}"
+           aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+
+      {% for page in page_list %}
+        <li class="page-item {{ page.active|yesno:"active," }}"><a
+            class="page-link"
+            href="?{{ page.query_params }}">{{ page.page_number }}</a></li>
+      {% endfor %}
+
+      <li class="page-item {{ page_obj.has_next|yesno:",disabled" }}">
+        <a class="page-link" href="?{% build_next_query_params %}"
+           aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+{% endif %}
