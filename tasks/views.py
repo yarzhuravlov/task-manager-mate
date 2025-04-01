@@ -1,17 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.views.generic.dates import timezone_today
 
-from tasks.forms import PartialTaskForm, ChangeTaskIsCompletedForm
+from tasks.forms import PartialTaskForm, ChangeTaskIsCompletedForm, TaskForm
 from tasks.models import Task
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
-    paginate_by = 15
+    paginate_by = 7
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,3 +51,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             )
 
         return redirect(reverse("tasks:task-list"))
+
+
+class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
+    form_class = TaskForm
+    model = Task
+
+    def get_success_url(self):
+        return reverse_lazy("tasks:task-update", args=(self.kwargs["pk"],))
