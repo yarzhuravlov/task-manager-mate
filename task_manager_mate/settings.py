@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # custom apps
     "workers",
     "tasks",
+    "base",
     # external apps
     "django_extensions",
     "debug_toolbar",
