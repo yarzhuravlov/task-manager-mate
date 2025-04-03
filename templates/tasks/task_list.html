@@ -2,6 +2,9 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
+  <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas">
+    Search Tasks
+  </button>
   <h1>Task list</h1>
   <div class="row align-left">
     <div class="col-auto">
@@ -53,12 +56,28 @@
                style="height: 5rem;">
               {{ task.description | truncatechars:80 }}
             </p>
-            <a href="{% url 'tasks:task-update' pk=task.id %}" class="card-link">Edit</a>
+            <a href="{% url 'tasks:task-update' pk=task.id %}"
+               class="card-link">Edit</a>
             <a href="#" class="card-link">Delete</a>
           </div>
         </div>
       </div>
     {% endfor %}
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="searchOffcanvas"
+        aria-labelledby="searchOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 id="searchOffcanvasLabel">Search Tasks</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+              aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <form action="" method="GET">
+        {{ search_form|crispy }}
+        <input class="btn btn-primary" type="submit" value="Find">
+      </form>
+    </div>
   </div>
 {% endblock %}
 {% block scripts %}

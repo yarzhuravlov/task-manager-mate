@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.db import models
 
 from tasks.models import Task
 
@@ -9,13 +10,13 @@ Worker = get_user_model()
 class TaskForm(forms.ModelForm):
     deadline = forms.DateTimeField(
         widget=forms.widgets.DateTimeInput(
-            attrs={'type': 'datetime-local'},
+            attrs={"type": "datetime-local"},
         )
     )
     assigners = forms.ModelMultipleChoiceField(
         queryset=Worker.objects.select_related("position"),
         required=False,
-        widget=forms.widgets.CheckboxSelectMultiple()
+        widget=forms.widgets.CheckboxSelectMultiple(),
     )
 
     class Meta:
@@ -32,10 +33,36 @@ class ChangeTaskIsCompletedForm(forms.Form):
     is_completed = forms.BooleanField(
         label="",
         required=False,
-        widget=forms.CheckboxInput(attrs={
-            "submit": True
-        })
+        widget=forms.CheckboxInput(attrs={"submit": True}),
     )
-    task_id = forms.IntegerField(
-        widget=forms.HiddenInput()
+    task_id = forms.IntegerField(widget=forms.HiddenInput())
+
+
+class SearchIn(models.TextChoices):
+    NAME = "name"
+    DESCRIPTION = "description"
+    ASSIGNERS = "assigners"
+
+
+class Status(models.TextChoices):
+    ALL = "all"
+    INCOMPLETE = "incomplete"
+    COMPLETE = "complete"
+
+
+class TaskSearchForm(forms.Form):
+    content = forms.CharField(required=False)
+    search_in = forms.MultipleChoiceField(
+        choices=SearchIn.choices,
+        required=False,
+        widget=forms.widgets.CheckboxSelectMultiple,
+    )
+    status = forms.ChoiceField(
+        choices=Status.choices,
+        required=False,
+    )
+    priority = forms.MultipleChoiceField(
+        choices=Task.Priority.choices,
+        required=False,
+        widget=forms.widgets.CheckboxSelectMultiple,
     )
