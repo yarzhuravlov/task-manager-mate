@@ -2,13 +2,15 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <form action="" method="POST">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <input
-        class="btn btn-primary"
-        type="submit"
-        value="Login"
-        style="float: right">
-  </form>
+  <div>
+    <h2>Login</h2>
+    <form action="" method="POST">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <button type="submit" class="btn btn-primary" style="float: right;">Login</button>
+    </form>
+    <p>
+      Don't have an account? <a href="{% url 'register' %}">Sign up here</a>.
+    </p>
+  </div>
 {% endblock %}
