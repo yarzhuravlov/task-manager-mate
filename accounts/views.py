@@ -6,6 +6,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View, generic
 
 from accounts.forms import RegistrationForm
@@ -49,20 +51,22 @@ class RegistrationView(generic.CreateView):
             {
                 "user": user,
                 "domain": current_site.domain,
-                "uid": user.pk,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "token": account_activation_token.make_token(user),
             },
         )
         to_email = form.cleaned_data["email"]
         email = EmailMessage(mail_subject, message, to=[to_email])
+        # TODO: threading send email in other thread
         email.send()
         return render(request, "registration/ask_confirm.html")
 
 
+# TODO: add logging about invalid tokens
 class ActivateAccountView(View):
-    def get(self, request: HttpRequest, pk: int, token: str):
+    def get(self, request: HttpRequest, pk: str, token: str):
         try:
-            user = User.objects.get(pk=pk)
+            user = User.objects.get(pk=int(urlsafe_base64_decode(pk)))
         except User.DoesNotExist:
             user = None
 
