@@ -2,10 +2,12 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas">
-    Search Tasks
-  </button>
-  <h1>Task list</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Task list</h1>
+    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas">
+      <i class="bi bi-funnel"></i> Filters
+    </button>
+  </div>
   <div class="row align-left">
     <div class="col-auto">
       <div
@@ -33,8 +35,12 @@
             <div class="row">
               <div class="col-10">
                 <h5 class="card-title"
-                    style="height: 5rem">
-                  {{ task.name | truncatechars:60 }}
+                    style="height: 6rem">
+                    <span class="badge 
+                         {% if task.priority == 1 %}text-white bg-dark{% elif task.priority == 2 %}bg-danger{% elif task.priority == 3 %}bg-warning{% else %}bg-success{% endif %}">
+                    {{ task.get_priority_display }}
+                    </span>
+                    {{ task.name | truncatechars:60 }}
                 </h5>
               </div>
               <div class="col-2">
