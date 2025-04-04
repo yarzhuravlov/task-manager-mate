@@ -64,7 +64,7 @@
             </p>
             <a href="{% url 'tasks:task-update' pk=task.id %}"
                class="card-link">Edit</a>
-            <a href="#" class="card-link">Delete</a>
+            <a href="{% url 'tasks:task-delete' pk=task.id %}" class="card-link">Delete</a>
           </div>
         </div>
       </div>
