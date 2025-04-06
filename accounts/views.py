@@ -1,10 +1,8 @@
 from typing import Any
 from django.contrib.auth import get_user_model, login
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -12,7 +10,8 @@ from django.views import View, generic
 
 from accounts.forms import RegistrationForm
 from accounts.tokens import account_activation_token
-from base.utils import getattr_or_default
+from base.utils.core import getattr_or_default
+from base.utils.mail import send_email
 from workers.models import Position
 
 User = get_user_model()
@@ -46,19 +45,20 @@ class RegistrationView(generic.CreateView):
 
         current_site = get_current_site(request)
         mail_subject = "Activate your Task Manager account."
-        message = render_to_string(
+        to_email = form.cleaned_data["email"]
+
+        send_email(
             "emails/acc_active_email.html",
             {
+                "subject": mail_subject,
                 "user": user,
                 "domain": current_site.domain,
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                 "token": account_activation_token.make_token(user),
+                "to_email": to_email,
             },
         )
-        to_email = form.cleaned_data["email"]
-        email = EmailMessage(mail_subject, message, to=[to_email])
-        # TODO: threading send email in other thread
-        email.send()
+
         return render(request, "registration/ask_confirm.html")
 
 
