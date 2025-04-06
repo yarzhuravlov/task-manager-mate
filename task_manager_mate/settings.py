@@ -112,10 +112,10 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",  # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",  # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",  # noqa
     },
 ]
 
@@ -147,15 +147,32 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
+        }
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+        },
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "error.log",
+            "formatter": "verbose",
         },
     },
     "loggers": {
         "django.db.backends": {
             "handlers": ["console"],
             "level": "DEBUG",
+        },
+        "accounts": {
+            "handlers": ["file"],
+            "level": "ERROR",
+            "propagate": False,
         },
     },
 }
