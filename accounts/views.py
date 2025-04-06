@@ -1,4 +1,7 @@
+import logging
 from typing import Any
+
+
 from django.contrib.auth import get_user_model, login
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest, HttpResponse
@@ -15,6 +18,8 @@ from base.utils.mail import send_email
 from workers.models import Position
 
 User = get_user_model()
+
+logger = logging.getLogger(__name__)
 
 
 class RegistrationView(generic.CreateView):
@@ -62,12 +67,11 @@ class RegistrationView(generic.CreateView):
         return render(request, "registration/ask_confirm.html")
 
 
-# TODO: add logging about invalid tokens
 class ActivateAccountView(View):
     def get(self, request: HttpRequest, pk: str, token: str):
         try:
             user = User.objects.get(pk=int(urlsafe_base64_decode(pk)))
-        except User.DoesNotExist:
+        except (User.DoesNotExist, ValueError):
             user = None
 
         if user is not None and account_activation_token.check_token(
@@ -78,4 +82,8 @@ class ActivateAccountView(View):
             login(request, user)
             return redirect(reverse("tasks:task-list"))
         else:
+            logger.error(
+                "Check of account activation token failed. "
+                f"Url: {request.get_full_path()}"
+            )
             return render(request, "registration/invalid_activation_link.html")
