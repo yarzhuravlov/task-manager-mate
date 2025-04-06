@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.dates import timezone_today
 
-from base.utils import getattr_or_default
+from base.utils.core import getattr_or_default
 from tasks.forms import (
     PartialTaskForm,
     ChangeTaskIsCompletedForm,
