@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -7,6 +9,10 @@ class Position(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    @staticmethod
+    def get_unknown_position() -> Position:
+        return Position.objects.get_or_create(name="Unknown")[0]
 
 
 class Worker(AbstractUser):
