@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -29,13 +29,6 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-hk^d$=rlf$i@2(+m5c5m@ocsa83mgenqw^v94$4h9y8gfm+6pn"
 )
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
-
-ALLOWED_HOSTS = [
-    "127.0.0.1"
-]
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -63,6 +56,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -94,31 +88,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "task_manager_mate.wsgi.application"
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator", # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",  # noqa
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",  # noqa
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",  # noqa
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", # noqa
     },
 ]
 
@@ -137,6 +121,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "staticfiles/"
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
@@ -187,9 +172,6 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 LOGIN_REDIRECT_URL = reverse_lazy("tasks:task-list")
-
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.getenv("EMAIL_HOST") or "smtp.gmail.com"

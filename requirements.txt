@@ -7,8 +7,10 @@ django-extensions==3.2.3
 django-utils-six==2.0
 flake8==7.1.2
 mccabe==0.7.0
+psycopg2-binary==2.9.10
 pycodestyle==2.12.1
 pyflakes==3.2.0
 python-dotenv==1.1.0
 sqlparse==0.5.3
 tzdata==2025.2
+whitenoise==6.9.0
