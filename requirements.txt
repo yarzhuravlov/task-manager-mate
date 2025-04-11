@@ -6,7 +6,9 @@ django-debug-toolbar==5.1.0
 django-extensions==3.2.3
 django-utils-six==2.0
 flake8==7.1.2
+gunicorn==23.0.0
 mccabe==0.7.0
+packaging==24.2
 psycopg2-binary==2.9.10
 pycodestyle==2.12.1
 pyflakes==3.2.0
