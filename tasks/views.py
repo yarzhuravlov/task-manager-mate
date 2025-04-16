@@ -1,7 +1,9 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.dates import timezone_today
@@ -16,6 +18,8 @@ from tasks.forms import (
     Status,
 )
 from tasks.models import Task
+
+Worker = get_user_model()
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -41,11 +45,12 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         context = super().get_context_data(**kwargs)
 
         if hasattr(self, "task_form"):
-            context["task_form"] = getattr(self, "task_form")
+            task_form = getattr(self, "task_form")
+            context["open_task_modal"] = True
         else:
-            context["task_form"] = PartialTaskForm(
-                initial={"deadline": timezone_today()}
-            )
+            task_form = PartialTaskForm(initial={"deadline": timezone_today()})
+            context["open_task_modal"] = False
+        context["task_form"] = self._render_task_form_html(task_form)
 
         for task in context["task_list"]:
             task.is_completed_form = ChangeTaskIsCompletedForm(
@@ -59,6 +64,8 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
                 initial={"search_in": [SearchIn.NAME], "status": [Status.ALL]}
             ),
         )
+
+        context["workers"] = Worker.objects.all()
 
         return context
 
@@ -115,6 +122,18 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
                 queryset = queryset.filter(priority__in=priority)
 
         return queryset
+
+    def _render_task_form_html(self, task_form: TaskForm):
+        task_form_html = render_to_string(
+            "includes/base_form.html",
+            {
+                "form": task_form,
+                "form_submit_value": "Add",
+                "form_submit_name": "task_form",
+            },
+            request=self.request,
+        )
+        return task_form_html
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):

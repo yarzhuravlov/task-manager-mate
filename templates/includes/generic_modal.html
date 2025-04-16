@@ -1,0 +1,32 @@
+<div class="modal fade" id="{{ modal_id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog {{ modal_size|default:'modal-lg' }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ body_html|safe }}
+      </div>
+      <div class="modal-footer">
+        {% if footer_html %}
+          {{ footer_html|safe }}
+        {% else %}
+          <button type="button" class="btn btn-secondary"
+                  data-bs-dismiss="modal">Close
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if open_modal %}
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          let modal = new bootstrap.Modal(document.getElementById("{{ modal_id }}"));
+          modal.show();
+      });
+  </script>
+{% endif %}

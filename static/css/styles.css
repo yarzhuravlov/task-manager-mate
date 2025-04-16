@@ -12,3 +12,14 @@
 .task-form-invalid {
     border: 1px solid red;
 }
+
+.bootstrap-select-in-crispy {
+    appearance: none;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    padding: .375rem 2.25rem .375rem .75rem;
+    color: var(--bs-body-color);
+}
+
+.bootstrap-select-in-crispy::after {
+    display: none !important;
+}

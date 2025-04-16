@@ -14,9 +14,20 @@ class TaskForm(forms.ModelForm):
         )
     )
     assigners = forms.ModelMultipleChoiceField(
-        queryset=Worker.objects.select_related("position"),
+        queryset=Worker.objects.select_related(
+            "position",
+        ).exclude(
+            first_name="",
+        ),
         required=False,
-        widget=forms.widgets.CheckboxSelectMultiple(),
+        widget=forms.widgets.SelectMultiple(
+            attrs={
+                "class": "selectpicker form-control",
+                "data-live-search": "true",
+                "multiple": True,
+                "data-style": "form-select bootstrap-select-in-crispy",
+            }
+        ),
     )
 
     class Meta:
