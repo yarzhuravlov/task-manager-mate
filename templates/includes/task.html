@@ -1,0 +1,41 @@
+{% load crispy_forms_filters %}
+<div class="col-auto">
+  <div class="card mb-4 task-item-container">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-10">
+          <h5 class="card-title"
+              style="height: 6rem">
+                    <span class="badge
+                         {% if task.priority == 1 %}text-white bg-dark{% elif task.priority == 2 %}bg-danger{% elif task.priority == 3 %}bg-warning{% else %}bg-success{% endif %}">
+                    {{ task.get_priority_display }}
+                    </span>
+            {{ task.name | truncatechars:60 }}
+          </h5>
+        </div>
+        <div class="col-2">
+          <form class="is_completed_form" action="" method="POST">
+            {% csrf_token %}
+            {{ task.is_completed_form|crispy }}
+            <input type="hidden" name="is_completed_form">
+          </form>
+        </div>
+      </div>
+      <p
+          class="card-subtitle mb-2"
+          style="height: 1rem">
+        {% if task.deadline %}
+          {{ task.deadline }}
+        {% endif %}
+      </p>
+      <p class="card-text"
+         style="height: 5rem;">
+        {{ task.description | truncatechars:80 }}
+      </p>
+      <a href="{% url 'tasks:task-update' pk=task.id %}"
+         class="card-link">Edit</a>
+      <a href="{% url 'tasks:task-delete' pk=task.id %}"
+         class="card-link">Delete</a>
+    </div>
+  </div>
+</div>
