@@ -9,9 +9,14 @@ logger = logging.getLogger(__name__)
 
 
 @execute_in_background
-def send_email(html_template: str, context: dict[str, Any]):
-    subject: str = context.get("subject")
-    to_email: str | list[str] = context.get("to_email")
+def send_email(
+    subject: str,
+    html_template: str,
+    context: dict[str, Any],
+    to_email=None,
+):
+    subject: str = subject
+    to_email: str | list[str] = to_email
     cc: list[str] | None = context.get("cc")
     bcc: list[str] | None = context.get("bcc")
     attachments = context.get("attachments")

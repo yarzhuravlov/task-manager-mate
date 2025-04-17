@@ -1,9 +1,9 @@
 import logging
 from typing import Any
 
-
 from django.contrib.auth import get_user_model, login
 from django.contrib.sites.shortcuts import get_current_site
+from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -12,9 +12,9 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View, generic
 
 from accounts.forms import RegistrationForm
+from accounts.services.emails.registration import send_account_activation_email
 from accounts.tokens import account_activation_token
 from base.utils.core import getattr_or_default
-from base.utils.mail import send_email
 from workers.models import Position
 
 User = get_user_model()
@@ -43,26 +43,21 @@ class RegistrationView(generic.CreateView):
             self.form = form
             return self.get(request, *args, **kwargs)
 
-        user = form.save(commit=False)
-        user.is_active = False
-        user.position = Position.get_unknown_position()
-        user.save()
+        with transaction.atomic():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.position = Position.get_unknown_position()
+            user.save()
 
-        current_site = get_current_site(request)
-        mail_subject = "Activate your Task Manager account."
-        to_email = form.cleaned_data["email"]
+            current_site = get_current_site(request)
+            domain = current_site.domain
 
-        send_email(
-            "emails/acc_active_email.html",
-            {
-                "subject": mail_subject,
-                "user": user,
-                "domain": current_site.domain,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "token": account_activation_token.make_token(user),
-                "to_email": to_email,
-            },
-        )
+            send_account_activation_email(
+                user=user,
+                domain=domain,
+                uid=urlsafe_base64_encode(force_bytes(user.pk)),
+                token=account_activation_token.make_token(user)
+            )
 
         return render(request, "registration/ask_confirm.html")
 
