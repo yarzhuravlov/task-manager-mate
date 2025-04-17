@@ -13,10 +13,9 @@ def send_email(
     subject: str,
     html_template: str,
     context: dict[str, Any],
-    to_email=None,
+    to_email: str | list[str],
 ):
     subject: str = subject
-    to_email: str | list[str] = to_email
     cc: list[str] | None = context.get("cc")
     bcc: list[str] | None = context.get("bcc")
     attachments = context.get("attachments")
@@ -47,6 +46,6 @@ def send_email(
     except Exception as e:
         logger.info(
             f"Sending email to {', '.join(to_email)} "
-            "with subject: {subject} - Status 0"
+            f"with subject: {subject} - Status 0"
         )
         logger.exception(e)
