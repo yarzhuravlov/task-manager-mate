@@ -9,15 +9,14 @@ User = get_user_model()
 
 class TaskForm(forms.ModelForm):
     deadline = forms.DateTimeField(
+        required=False,
         widget=forms.widgets.DateTimeInput(
             attrs={"type": "datetime-local"},
-        )
+        ),
     )
     assigners = forms.ModelMultipleChoiceField(
         queryset=User.objects.select_related(
             "position",
-        ).exclude(
-            first_name="",
         ),
         required=False,
         widget=forms.widgets.SelectMultiple(
