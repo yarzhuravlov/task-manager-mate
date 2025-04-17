@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import F
 from django.utils import timezone
 
-Worker = get_user_model()
+User = get_user_model()
 
 
 class TaskType(models.Model):
@@ -30,14 +30,14 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.SmallIntegerField(choices=Priority, default=Priority.LOW)
     task_type = models.ForeignKey(TaskType, on_delete=models.PROTECT)
-    assigners = models.ManyToManyField(Worker)
+    assigners = models.ManyToManyField(User)
 
     class Meta:
         default_related_name = "tasks"
         ordering = (
             "is_completed",
             F("deadline").asc(nulls_last=True),
-            "priority"
+            "priority",
         )
 
     def __str__(self):
