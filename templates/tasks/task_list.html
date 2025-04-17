@@ -37,7 +37,7 @@
       </form>
     </div>
   </div>
-  {% include 'includes/generic_modal.html' with modal_id="addTaskModal" title="Add new task" body_html=task_form open_modal=open_task_modal %}
+  {% include 'partials/generic_modal.html' with modal_id="addTaskModal" title="Add new task" body_html=task_form open_modal=open_task_modal %}
 {% endblock %}
 {% block scripts %}
   <script>
