@@ -18,7 +18,6 @@ from tasks.forms import (
     SearchIn,
     Status,
     TaskTypeForm,
-    TaskTypeUpdateForm,
 )
 from tasks.models import Task, TaskType
 
@@ -153,25 +152,20 @@ class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 def get_task_type_form_context(
-    task_type_form: TaskTypeForm | TaskTypeUpdateForm,
+    task_type_form: TaskTypeForm,
     form_submit_name,
 ):
-    match task_type_form:
-        case TaskTypeForm():
-            form_submit_value = "Add"
-            hx_target = "#createTaskTypeModalBody"
-            hx_post = reverse("tasks:task-type-create-form")
-        case TaskTypeUpdateForm():
-            form_submit_value = "Save"
-            hx_target = "#updateTaskTypeModalBody"
-            hx_post = reverse(
-                "tasks:task-type-update-form",
-                args=[task_type_form.instance.id],
-            )
-        case _:
-            form_submit_value = "Submit"
-            hx_target = None
-            hx_post = None
+    if task_type_form.instance and task_type_form.instance.id:
+        form_submit_value = "Update"
+        hx_target = "#updateTaskTypeModalBody"
+        hx_post = reverse(
+            "tasks:task-type-update-form",
+            args=[task_type_form.instance.id],
+        )
+    else:
+        form_submit_value = "Add"
+        hx_target = "#createTaskTypeModalBody"
+        hx_post = reverse("tasks:task-type-create-form")
 
     return {
         "form": task_type_form,
@@ -184,7 +178,7 @@ def get_task_type_form_context(
 
 
 def render_task_type_form_html(
-    task_type_form: TaskTypeForm | TaskTypeUpdateForm,
+    task_type_form: TaskTypeForm,
     request: HttpRequest,
     form_submit_name,
 ):
@@ -241,7 +235,7 @@ class TaskTypeUpdateFormView(
     model = TaskType
     context_object_name = "task_type"
     template_name = "partials/base_htmx_form.html"
-    form_class = TaskTypeUpdateForm
+    form_class = TaskTypeForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

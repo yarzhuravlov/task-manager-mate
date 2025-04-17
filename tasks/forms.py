@@ -83,13 +83,3 @@ class TaskTypeForm(forms.ModelForm):
     class Meta:
         model = TaskType
         fields = ("name",)
-
-
-class TaskTypeUpdateForm(forms.ModelForm):
-    id = forms.IntegerField(
-        widget=forms.widgets.HiddenInput()
-    )
-
-    class Meta:
-        model = TaskType
-        fields = "__all__"
