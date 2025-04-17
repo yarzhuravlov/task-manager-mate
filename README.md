@@ -36,12 +36,26 @@ To get started with Task Manager, clone the repository and set up the project lo
   python manage.py migrate
   ```
 
-5. Run the development server:
+5. Load initial data from the provided fixture:
+  ```shell
+  python manage.py loaddata dump.json
+  ```
+
+6. Run the development server:
   ```shell
   python manage.py runserver
   ```
 
 6. Open your browser and navigate to `http://127.0.0.1:8000/`.
+
+### Accessing the Admin Panel
+
+To log in to the admin panel, use the following credentials:
+
+- **Username**: `admin`
+- **Password**: `1234`
+
+Navigate to `http://127.0.0.1:8000/admin/` to access the admin panel.
 
 ## Features
 
