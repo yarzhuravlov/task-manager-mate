@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import F
-from django.utils import timezone
 
 User = get_user_model()
 
@@ -25,7 +24,7 @@ class Task(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default="")
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(null=True)
     is_completed = models.BooleanField(default=False)
     priority = models.SmallIntegerField(choices=Priority, default=Priority.LOW)
