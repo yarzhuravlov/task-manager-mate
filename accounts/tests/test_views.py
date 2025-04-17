@@ -1,12 +1,11 @@
 from unittest.mock import patch, MagicMock
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from accounts.views import RegistrationView, ActivateAccountView
 from accounts.forms import RegistrationForm
 from accounts.tokens import account_activation_token
 from workers.models import Position
