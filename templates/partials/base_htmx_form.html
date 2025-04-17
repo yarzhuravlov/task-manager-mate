@@ -1,0 +1,29 @@
+{% load crispy_forms_filters %}
+<form
+    id="{{ form_submit_name }}"
+    {% if hx_post %}hx-post="{{ hx_post }}"{% endif %}
+    hx-trigger="submit"
+    {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
+    {% if hx_swap %}hx-swap="{{ hx_swap }}"{% endif %}
+    novalidate
+>
+  {% csrf_token %}
+
+  {% if form_content_html %}
+    {{ form_content_html }}
+  {% endif %}
+
+  {% if form %}
+    {{ form|crispy }}
+  {% endif %}
+
+  {% if form_submit_button %}
+    {{ form_submit_button }}
+  {% else %}
+    <input
+        type="submit"
+        class="btn btn-primary"
+        value="{{ form_submit_value }}"
+        name="{{ form_submit_name }}">
+  {% endif %}
+</form>

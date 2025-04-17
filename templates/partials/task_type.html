@@ -1,0 +1,37 @@
+{% if hx_swap_obb_tbody %}
+  <tbody hx-swap-oob="{{ hx_swap_obb_tbody }}">
+{% endif %}
+<tr class="container"
+    id="taskType{{ task_type.id }}"
+    {% if hx_swap_obb_tr %}
+    hx-swap-oob="{{ hx_swap_obb_tr }}"
+    {% endif %}
+>
+  <td class="col-sm-9">{{ task_type.name }}</td>
+  <td class="col-sm-1 text-center">{{ task_type.tasks.count }}</td>
+  <td class="col-sm-2 text-center">
+    <button class="btn btn-sm btn-outline-secondary"
+            data-type-id="{{ task_type.id }}"
+            data-type-name="{{ task_type.name }}"
+            hx-get="{% url "tasks:task-type-update-form" pk=task_type.pk %}"
+            hx-trigger="click"
+            hx-target="#updateTaskTypeModalBody"
+            _="on htmx:afterRequest wait 10ms then call openModal('updateTaskTypeModal')"
+    >
+      <i class=" bi bi-pencil
+    "></i> Edit
+    </button>
+    <button class="btn btn-sm btn-outline-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteTaskTypeModal"
+            data-type-id="{{ task_type.id }}"
+            data-type-name="{{ task_type.name }}"
+        {{ task_type.tasks.count|yesno:"disabled," }}
+    >
+      <i class="bi bi-trash"></i> Delete
+    </button>
+  </td>
+</tr>
+{% if hx_swap_obb_tbody %}
+  </tbody>
+{% endif %}
