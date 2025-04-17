@@ -9,7 +9,7 @@ User = get_user_model()
 htmx_header = {"Hx-Request": True}
 
 
-def create_user_and_login(test_case):
+def create_user_and_login(test_case: TestCase):
     user = User.objects.create_user(
         first_name="test_firstname",
         last_name="test_lastname",
@@ -22,14 +22,88 @@ def create_user_and_login(test_case):
 
 
 class TaskListViewTest(TestCase):
+    def setUp(self):
+        self.user = create_user_and_login(self)
+        self.task_type = TaskType.objects.create(name="Test Type")
+        self.task1 = Task.objects.create(
+            name="Task 1",
+            description="Description 1",
+            task_type=self.task_type,
+            is_completed=False,
+            priority=1,
+        )
+        self.task2 = Task.objects.create(
+            name="Task 2",
+            description="Description 2",
+            task_type=self.task_type,
+            is_completed=True,
+            priority=2,
+        )
+        self.task1.assigners.add(self.user)
+        self.task2.assigners.add(self.user)
+
     def test_redirect_if_not_logged_in(self):
+        self.client.logout()
         response = self.client.get(reverse("tasks:task-list"))
         self.assertEqual(response.status_code, 302)
 
     def test_logged_in_user_sees_task_list(self):
-        create_user_and_login(self)
         response = self.client.get(reverse("tasks:task-list"))
         self.assertEqual(response.status_code, 200)
+
+    def test_filter_by_name(self):
+        response = self.client.get(
+            reverse("tasks:task-list"),
+            {
+                "content": "Task 1",
+                "search_in": ["name"],
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 1")
+        self.assertNotContains(response, "Task 2")
+
+    def test_filter_by_description(self):
+        response = self.client.get(
+            reverse("tasks:task-list"),
+            {"content": "Description 2", "search_in": ["description"]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 2")
+        self.assertNotContains(response, "Task 1")
+
+    def test_filter_by_assigner(self):
+        response = self.client.get(
+            reverse("tasks:task-list"),
+            {"content": self.user.username, "search_in": ["assigners"]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 1")
+        self.assertContains(response, "Task 2")
+
+    def test_filter_by_status_complete(self):
+        response = self.client.get(
+            reverse("tasks:task-list"), {"status": "complete"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 2")
+        self.assertNotContains(response, "Task 1")
+
+    def test_filter_by_status_incomplete(self):
+        response = self.client.get(
+            reverse("tasks:task-list"), {"status": "incomplete"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 1")
+        self.assertNotContains(response, "Task 2")
+
+    def test_filter_by_priority(self):
+        response = self.client.get(
+            reverse("tasks:task-list"), {"priority": [1]}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Task 1")
+        self.assertNotContains(response, "Task 2")
 
 
 class TaskUpdateViewTest(TestCase):
