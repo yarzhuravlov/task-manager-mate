@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q, QuerySet
-from django.http import HttpRequest
-from django.shortcuts import redirect
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import generic
+from django.views.generic import UpdateView, CreateView
 from django.views.generic.dates import timezone_today
 
 from base.utils.core import getattr_or_default
@@ -16,10 +17,12 @@ from tasks.forms import (
     TaskSearchForm,
     SearchIn,
     Status,
+    TaskTypeForm,
+    TaskTypeUpdateForm,
 )
-from tasks.models import Task
+from tasks.models import Task, TaskType
 
-Worker = get_user_model()
+User = get_user_model()
 
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
@@ -65,7 +68,7 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             ),
         )
 
-        context["workers"] = Worker.objects.all()
+        context["workers"] = User.objects.all()
 
         return context
 
@@ -147,3 +150,140 @@ class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):
 class TaskDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Task
     success_url = reverse_lazy("tasks:task-list")
+
+
+def get_task_type_form_context(
+    task_type_form: TaskTypeForm | TaskTypeUpdateForm,
+    form_submit_name,
+):
+    match task_type_form:
+        case TaskTypeForm():
+            form_submit_value = "Add"
+            hx_target = "#createTaskTypeModalBody"
+            hx_post = reverse("tasks:task-type-create-form")
+        case TaskTypeUpdateForm():
+            form_submit_value = "Save"
+            hx_target = "#updateTaskTypeModalBody"
+            hx_post = reverse(
+                "tasks:task-type-update-form",
+                args=[task_type_form.instance.id],
+            )
+        case _:
+            form_submit_value = "Submit"
+            hx_target = None
+            hx_post = None
+
+    return {
+        "form": task_type_form,
+        "form_submit_value": form_submit_value,
+        "form_submit_name": form_submit_name,
+        "hx_post": hx_post,
+        "hx_target": hx_target,
+        "hx_swap": "outerHtml",
+    }
+
+
+def render_task_type_form_html(
+    task_type_form: TaskTypeForm | TaskTypeUpdateForm,
+    request: HttpRequest,
+    form_submit_name,
+):
+    return render_to_string(
+        "partials/base_htmx_form.html",
+        get_task_type_form_context(task_type_form, form_submit_name),
+        request=request,
+    )
+
+
+class TaskTypeCreateFormView(LoginRequiredMixin, CreateView):
+    template_name = "partials/base_htmx_form.html"
+    model = TaskType
+    form_class = TaskTypeForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            get_task_type_form_context(
+                TaskTypeForm(),
+                "task_type_form",
+            )
+        )
+
+        return context
+
+    def form_valid(self, form):
+        form.instance.save()
+        if "Hx-Request" in self.request.headers:
+            return render(
+                request=self.request,
+                template_name="partials/task_type.html",
+                context={
+                    "task_type": form.instance,
+                    "hx_swap_obb_tbody": "afterbegin:#task-types-table-body",  # noqa: E501
+                },
+            )
+
+    def form_invalid(self, form):
+        return HttpResponse(
+            render_task_type_form_html(
+                form,
+                self.request,
+                "task_type_form",
+            ),
+        )
+
+
+class TaskTypeUpdateFormView(
+    LoginRequiredMixin,
+    UpdateView,
+):
+    model = TaskType
+    context_object_name = "task_type"
+    template_name = "partials/base_htmx_form.html"
+    form_class = TaskTypeUpdateForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(
+            get_task_type_form_context(
+                context["form"], "task_type_update_form"
+            )
+        )
+
+        return context
+
+    def form_valid(self, form):
+        if "Hx-Request" in self.request.headers:
+            form.instance.save()
+            return render(
+                request=self.request,
+                template_name="partials/task_type.html",
+                context={
+                    "task_type": form.instance,
+                    "hx_swap_obb_tr": f"outerHTML:#taskType{form.instance.id}",
+                },
+            )
+
+    def form_invalid(self, form):
+        return HttpResponse(
+            render_task_type_form_html(
+                form,
+                self.request,
+                "task_type_form",
+            ),
+        )
+
+
+class TaskTypeListView(LoginRequiredMixin, generic.ListView):
+    template_name = "tasks/task_type_list.html"
+    context_object_name = "task_types"
+
+    def get_queryset(self):
+        return TaskType.objects.prefetch_related("tasks")
+
+
+class TaskTypeDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = TaskType
+    success_url = reverse_lazy("tasks:task-type-list")
