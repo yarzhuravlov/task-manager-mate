@@ -2,9 +2,9 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from tasks.models import Task
+from tasks.models import Task, TaskType
 
-Worker = get_user_model()
+User = get_user_model()
 
 
 class TaskForm(forms.ModelForm):
@@ -14,7 +14,7 @@ class TaskForm(forms.ModelForm):
         )
     )
     assigners = forms.ModelMultipleChoiceField(
-        queryset=Worker.objects.select_related(
+        queryset=User.objects.select_related(
             "position",
         ).exclude(
             first_name="",
@@ -77,3 +77,19 @@ class TaskSearchForm(forms.Form):
         required=False,
         widget=forms.widgets.CheckboxSelectMultiple,
     )
+
+
+class TaskTypeForm(forms.ModelForm):
+    class Meta:
+        model = TaskType
+        fields = ("name",)
+
+
+class TaskTypeUpdateForm(forms.ModelForm):
+    id = forms.IntegerField(
+        widget=forms.widgets.HiddenInput()
+    )
+
+    class Meta:
+        model = TaskType
+        fields = "__all__"
