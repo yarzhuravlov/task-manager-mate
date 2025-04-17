@@ -93,35 +93,70 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         queryset: QuerySet[Task],
     ) -> QuerySet[Task]:
         if search_form := getattr_or_default(self, "search_form"):
-            if content := search_form.cleaned_data.get("content"):
-                search_in = search_form.cleaned_data["search_in"]
 
-                search_in_query = Q()
+            queryset = TaskListView._update_queryset_with_content(
+                queryset,
+                search_form,
+            )
 
-                if SearchIn.NAME in search_in:
-                    search_in_query |= Q(name__icontains=content)
-                if SearchIn.DESCRIPTION in search_in:
-                    search_in_query |= Q(description__icontains=content)
-                if SearchIn.ASSIGNERS in search_in:
-                    search_in_query |= (
-                        Q(assigners__username__icontains=content)
-                        | Q(assigners__first_name__icontains=content)
-                        | Q(assigners__last_name__icontains=content)
-                    )
+            queryset = TaskListView._update_queryset_with_status(
+                queryset,
+                search_form,
+            )
 
-                queryset = queryset.filter(search_in_query)
+            queryset = TaskListView._update_queryset_with_priority(
+                queryset, search_form
+            )
 
-            if status := search_form.cleaned_data.get("status"):
-                match status:
-                    case Status.COMPLETE.value:
-                        queryset = queryset.filter(is_completed=True)
-                    case Status.INCOMPLETE.value:
-                        queryset = queryset.filter(is_completed=False)
-                    case _:
-                        pass
+        return queryset
 
-            if priority := search_form.cleaned_data.get("priority"):
-                queryset = queryset.filter(priority__in=priority)
+    @staticmethod
+    def _update_queryset_with_content(
+        queryset: QuerySet[Task],
+        search_form: TaskSearchForm,
+    ):
+        if content := search_form.cleaned_data.get("content"):
+            search_in = search_form.cleaned_data["search_in"]
+
+            search_in_query = Q()
+
+            if SearchIn.NAME in search_in:
+                search_in_query |= Q(name__icontains=content)
+            if SearchIn.DESCRIPTION in search_in:
+                search_in_query |= Q(description__icontains=content)
+            if SearchIn.ASSIGNERS in search_in:
+                search_in_query |= (
+                    Q(assigners__username__icontains=content)
+                    | Q(assigners__first_name__icontains=content)
+                    | Q(assigners__last_name__icontains=content)
+                )
+
+            queryset = queryset.filter(search_in_query)
+
+        return queryset
+
+    @staticmethod
+    def _update_queryset_with_status(
+        queryset: QuerySet[Task],
+        search_form: TaskSearchForm,
+    ):
+        if status := search_form.cleaned_data.get("status"):
+            match status:
+                case Status.COMPLETE.value:
+                    queryset = queryset.filter(is_completed=True)
+                case Status.INCOMPLETE.value:
+                    queryset = queryset.filter(is_completed=False)
+                case _:
+                    pass
+
+        return queryset
+
+    @staticmethod
+    def _update_queryset_with_priority(
+        queryset: QuerySet[Task], search_form: TaskSearchForm
+    ):
+        if priority := search_form.cleaned_data.get("priority"):
+            queryset = queryset.filter(priority__in=priority)
 
         return queryset
 
