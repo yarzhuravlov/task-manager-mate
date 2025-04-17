@@ -1,0 +1,24 @@
+{% load crispy_forms_filters %}
+{% include 'partials/generic_modal.html' with modal_id="createTaskTypeModal" title="Create Task Type" body_html=task_type_form %}
+
+{% include 'partials/generic_modal.html' with modal_id="updateTaskTypeModal" title="Update Task Type" body_html=task_type_update_form %}
+
+<div class="modal fade" id="deleteTaskTypeModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="POST" id="deleteTaskTypeForm">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Confirm Deletion</h5>
+        <button type="button" class="btn-close"
+                data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete task type <strong
+          id="deleteTypeName"></strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>

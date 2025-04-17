@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Task Types</h1>
+    <button class="btn btn-primary"
+            hx-get="{% url "tasks:task-type-create-form" %}"
+            hx-trigger="click"
+            hx-target="#createTaskTypeModalBody"
+            _="on htmx:afterRequest wait 10ms then call openModal('createTaskTypeModal')">
+      <i class="bi bi-plus"></i> Add Type
+    </button>
+  </div>
+  <table class="table table-bordered align-middle">
+    <thead class="table-light">
+    <tr>
+      <th>Name</th>
+      <th class="text-center">Task Count</th>
+      <th class="text-center">Actions</th>
+    </tr>
+    </thead>
+    <tbody id="task-types-table-body">
+    {% for task_type in task_types %}
+      {% include 'partials/task_type.html' with task_type=task_type %}
+    {% empty %}
+      <tr>
+        <td colspan="3" class="text-center">No task types yet.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% include "includes/task_type_modals.html" with task_type_form=task_type_form %}
+{% endblock %}
+{% block scripts %}
+  <script>
+      const taskTypesUrl = "{% url 'tasks:task-type-list' %}"
+  </script>
+  <script src="{% static 'js/tasks/taskTypeList.js' %}"></script>
+{% endblock %}
