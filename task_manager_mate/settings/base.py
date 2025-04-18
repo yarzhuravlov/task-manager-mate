@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
-    "django-insecure-hk^d$=rlf$i@2(+m5c5m@ocsa83mgenqw^v94$4h9y8gfm+6pn"
+    "django-insecure-hk^d$=rlf$i@2(+m5c5m@ocsa83mgenqw^v94$4h9y8gfm+6pn",
 )
 
 INTERNAL_IPS = [
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "workers",
     "tasks",
     "base",
+    "accounts",
     # external apps
     "django_extensions",
     "debug_toolbar",
@@ -93,16 +94,16 @@ WSGI_APPLICATION = "task_manager_mate.wsgi.application"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",  # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",  # noqa
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", # noqa
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",  # noqa
     },
 ]
 
@@ -178,3 +179,13 @@ EMAIL_HOST = os.getenv("EMAIL_HOST") or "smtp.gmail.com"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = int(os.getenv("EMAIL_PORT") or 587)
+
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
+if not GOOGLE_OAUTH_CLIENT_ID:
+    raise ValueError(
+        "GOOGLE_OAUTH_CLIENT_ID is missing."
+        "Have you put it in a file at .env?"
+    )
+
+SECURE_REFERRER_POLICY = 'no-referrer-when-downgrade'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"

@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any
 
 from django.contrib.auth import get_user_model, login
@@ -7,9 +8,13 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views import View, generic
+from django.views.decorators.csrf import csrf_exempt
+from google.auth.transport import requests
+from google.oauth2 import id_token
 
 from accounts.forms import RegistrationForm
 from accounts.services.emails.registration import send_account_activation_email
@@ -56,7 +61,7 @@ class RegistrationView(generic.CreateView):
                 user=user,
                 domain=domain,
                 uid=urlsafe_base64_encode(force_bytes(user.pk)),
-                token=account_activation_token.make_token(user)
+                token=account_activation_token.make_token(user),
             )
 
         return render(request, "registration/ask_confirm.html")
@@ -82,3 +87,40 @@ class ActivateAccountView(View):
                 f"Url: {request.get_full_path()}"
             )
             return render(request, "registration/invalid_activation_link.html")
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class GoogleAuthReceiverView(View):
+    def post(self, request, *args, **kwargs):
+        token = request.POST["credential"]
+
+        try:
+            user_data = id_token.verify_oauth2_token(
+                token, requests.Request(), os.environ["GOOGLE_OAUTH_CLIENT_ID"]
+            )
+
+            email = user_data["email"]
+            first_name, last_name = user_data.get(
+                "name", "Unknown Unknown"
+            ).split()
+            if given_name := user_data["given_name"]:
+                first_name = given_name
+
+            if family_name := user_data["family_name"]:
+                last_name = family_name
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    username=email,
+                    position=Position.get_unknown_position(),
+                )
+
+            login(request, user)
+        except ValueError:
+            return HttpResponse(status=403)
+
+        return redirect(reverse("tasks:task-list"))
