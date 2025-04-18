@@ -1,8 +1,3 @@
-.task-item-container {
-    width: 18rem;
-    height: 17rem;
-}
-
 .task-form-container {
     overflow: scroll;
     overflow-x: hidden;

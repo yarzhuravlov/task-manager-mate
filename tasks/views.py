@@ -26,7 +26,7 @@ User = get_user_model()
 
 class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
-    paginate_by = 7
+    paginate_by = 9
     search_form_class = TaskSearchForm
 
     def setup(self, request, *args, **kwargs):
