@@ -10,7 +10,7 @@
       >
         <i class="bi bi-plus"></i> Add
       </button>
-      <button class="btn btn-outline-secondary" type="butto n"
+      <button class="btn btn-outline-secondary" type="button"
               data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas"
               aria-controls="searchOffcanvas">
         <i class="bi bi-funnel"></i> Filters
@@ -19,7 +19,7 @@
   </div>
   <div class="row g-3 mt-2">
     {% for task in task_list %}
-      {% include 'includes/task.html' with task=task %}
+      {% include 'includes/task_card.html' with task=task %}
     {% endfor %}
   </div>
 
