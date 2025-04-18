@@ -1,17 +1,9 @@
-from typing import Callable, Any
 from unittest.mock import patch, MagicMock
+
 from django.test import TestCase, override_settings
 
-
-def dummy_execute_in_background(function: Callable[..., Any]):
-    return function
-
-
-patch(
-    "base.utils.core.execute_in_background", dummy_execute_in_background
-).start()
-
-from base.utils.mail import send_email # noqa:  E401
+from base.tests.utils.catch_threading_exception import CatchThreadingException
+from base.utils.mail import send_email  # noqa:  E401
 
 
 @override_settings(
@@ -56,13 +48,16 @@ class SendEmailTests(TestCase):
         mock_email_message,
         mock_render_to_string,
     ):
-        with self.assertRaises(ValueError) as context:
-            send_email(
-                subject="Test Subject",
-                html_template="test_template.html",
-                context={"key": "value"},
-                to_email=None,
-            )
+        with CatchThreadingException() as cm:
+            with self.assertRaises(ValueError) as context:
+                send_email(
+                    subject="Test Subject",
+                    html_template="test_template.html",
+                    context={"key": "value"},
+                    to_email=None,
+                )
+                if cm.exc_value is not None:
+                    raise cm.exc_value
 
         self.assertEqual(
             str(context.exception),
@@ -96,5 +91,5 @@ class SendEmailTests(TestCase):
         self.assertIn(
             "Sending email to test@example.com with subject: "
             "Test Subject - Status 0",
-            log.output[-2],
+            log.output[-1],
         )
