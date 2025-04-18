@@ -6,7 +6,9 @@ from tasks.views import (
     TaskUpdateView,
     TaskTypeListView,
     TaskTypeDeleteView,
-    TaskTypeCreateFormView, TaskTypeUpdateFormView,
+    TaskTypeCreateFormView,
+    TaskTypeUpdateFormView,
+    TaskDetailView,
 )
 
 urlpatterns = [
@@ -14,6 +16,11 @@ urlpatterns = [
         "",
         TaskListView.as_view(),
         name="task-list",
+    ),
+    path(
+        "<int:pk>/",
+        TaskDetailView.as_view(),
+        name="task-detail",
     ),
     path(
         "<int:pk>/update",

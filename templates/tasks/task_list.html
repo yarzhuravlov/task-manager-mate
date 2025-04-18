@@ -37,6 +37,21 @@
       </form>
     </div>
   </div>
+
+  <!-- Task Offcanvas -->
+  <div class="offcanvas offcanvas-end" tabindex="-1"
+       id="taskOffcanvas">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="taskOffcanvasLabel">Task
+        Details</h5>
+      <button type="button" class="btn-close text-reset"
+              data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="taskOffcanvasBody">
+
+    </div>
+  </div>
+
   {% include 'partials/generic_modal.html' with modal_id="addTaskModal" title="Add new task" body_html=task_form open_modal=open_task_modal %}
 {% endblock %}
 {% block scripts %}
@@ -65,6 +80,11 @@
               .addEventListener("change", () => {
                   isCompletedForm.submit()
               })
+      }
+
+      function openOffcanvas(offcanvasId) {
+          const offcanvas = new bootstrap.Offcanvas(document.getElementById(offcanvasId));
+          offcanvas.show();
       }
   </script>
 {% endblock %}

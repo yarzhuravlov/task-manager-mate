@@ -38,7 +38,9 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
         return super().setup(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Task.objects.all()
+        queryset = Task.objects.select_related("task_type").prefetch_related(
+            "assigners"
+        )
         queryset = self._update_queryset_with_search_form(queryset)
 
         return queryset
@@ -171,6 +173,11 @@ class TaskListView(LoginRequiredMixin, generic.ListView):
             request=self.request,
         )
         return task_form_html
+
+
+class TaskDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Task
+    template_name = "partials/task_detail.html"
 
 
 class TaskUpdateView(LoginRequiredMixin, generic.UpdateView):

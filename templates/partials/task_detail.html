@@ -1,0 +1,132 @@
+<!-- Task Status Badge -->
+<div class="mb-4 d-flex justify-content-between align-items-center">
+      <span
+          class="badge {% if task.is_completed %}bg-success{% else %}bg-primary{% endif %} fs-6">
+        {{ task.is_completed|yesno:"Completed,Active" }}
+      </span>
+
+  <!-- Priority Badge -->
+  <span class="badge fs-6
+        {% if task.priority == 1 %}bg-danger
+        {% elif task.priority == 2 %}bg-warning text-dark
+        {% elif task.priority == 3 %}bg-info text-dark
+        {% else %}bg-success{% endif %}">
+        {{ task.get_priority_display|title }} Priority
+      </span>
+</div>
+
+<!-- Task Name -->
+<div class="mb-4">
+  <h3>{{ task.name }}</h3>
+  <div class="d-flex align-items-center">
+    <span class="badge bg-secondary me-2">{{ task.task_type }}</span>
+    <small class="text-muted">ID: {{ task.id }}</small>
+  </div>
+</div>
+
+<!-- Dates Information -->
+<div class="card mb-4">
+  <div class="card-body bg-light">
+    <div class="row g-2">
+      <div class="col-6">
+        <div class="mb-0">
+          <small class="text-muted d-block">Created</small>
+          <strong>{{ task.created_at|date:"M d, Y" }}</strong>
+          <small
+              class="text-muted d-block">{{ task.created_at|time:"H:i" }}</small>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="mb-0">
+          {% if task.deadline %}
+            <small class="text-muted d-block">Deadline</small>
+            <strong
+                class="{% if task.deadline < now and not task.is_completed %}text-danger{% endif %}">
+              {{ task.deadline|date:"M d, Y" }}
+            </strong>
+            <small
+                class="text-muted d-block">{{ task.deadline|time:"H:i" }}</small>
+          {% else %}
+            <small class="text-muted d-block">Deadline</small>
+            <em>Not set</em>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Description -->
+<div class="mb-4">
+  <h5>Description</h5>
+  <div class="card">
+    <div class="card-body">
+      {% if task.description %}
+        <p class="mb-0">{{ task.description|linebreaks }}</p>
+      {% else %}
+        <p class="text-muted mb-0"><em>No description provided</em></p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Assigners -->
+<div class="mb-4">
+  <h5>Assigned Users</h5>
+  {% if task.assigners.exists %}
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        {% for user in task.assigners.all %}
+          <li class="list-group-item d-flex align-items-center">
+            <i class="bi bi-person-circle me-2 fs-5"></i>
+            <div>
+              <strong>{{ user.username }}</strong>
+              {% if user.email %}
+                <small
+                    class="text-muted d-block">{{ user.email }}</small>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% else %}
+    <div class="card">
+      <div class="card-body">
+        <p class="text-muted mb-0"><em>No users assigned</em></p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Action Buttons -->
+<div class="d-grid gap-2">
+  <div class="row g-2">
+    <div class="col">
+      <a href="{% url 'tasks:task-update' pk=task.id %}"
+         class="btn btn-primary w-100">
+        <i class="bi bi-pencil-square"></i> Edit Task
+      </a>
+    </div>
+    <div class="col">
+      <a href="{% url 'tasks:task-delete' pk=task.id %}"
+         class="btn btn-danger w-100">
+        <i class="bi bi-trash"></i> Delete Task
+      </a>
+    </div>
+  </div>
+
+  <!-- Mark Complete/Incomplete Form -->
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="task_id" value="{{ task.id }}">
+    <input type="hidden" name="is_completed"
+           value="{{ task.is_completed|yesno:"0,1" }}">
+    <button type="submit"
+            class="btn btn-outline-{% if task.is_completed %}warning{% else %}success{% endif %} w-100">
+      <i class="bi bi-{% if task.is_completed %}arrow-counterclockwise{% else %}check-circle{% endif %}"></i>
+      Mark as {% if task.is_completed %}Incomplete{% else %}
+      Complete{% endif %}
+    </button>
+  </form>
+</div>

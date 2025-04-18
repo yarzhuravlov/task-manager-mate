@@ -1,5 +1,11 @@
 {% load crispy_forms_filters %}
-<div class="col-12 col-lg-6 col-xl-4 d-flex">
+<div class="col-12 col-lg-6 col-xl-4 d-flex"
+     hx-get="{% url "tasks:task-detail" pk=task.pk %}"
+     hx-trigger="click"
+     hx-target="#taskOffcanvasBody"
+     hx-swap="innerHtml"
+     _="on htmx:afterRequest wait 10ms then call openOffcanvas('taskOffcanvas')"
+>
   <div
       class="card task-card w-100 mb-3 shadow-sm {% if task.is_completed %}bg-light{% endif %}"
       style="border-left: 4px solid
@@ -69,17 +75,6 @@
         </div>
       {% endif %}
 
-      <!-- Action Buttons -->
-      <div class="d-flex gap-1 mt-auto">
-        <a href="{% url 'tasks:task-update' pk=task.id %}"
-           class="btn btn-sm btn-outline-primary py-0 flex-grow-1">
-          <i class="bi bi-pencil-square"></i> Edit
-        </a>
-        <a href="{% url 'tasks:task-delete' pk=task.id %}"
-           class="btn btn-sm btn-outline-danger py-0 flex-grow-1">
-          <i class="bi bi-trash"></i> Delete
-        </a>
-      </div>
     </div>
   </div>
 </div>
