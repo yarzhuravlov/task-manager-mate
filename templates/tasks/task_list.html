@@ -75,11 +75,18 @@
 
   <script>
       for (const isCompletedForm of document.getElementsByClassName("is_completed_form")) {
-          isCompletedForm
+          isCompletedCheckbox = isCompletedForm
               .getElementsByTagName("input")["is_completed"]
-              .addEventListener("change", () => {
-                  isCompletedForm.submit()
-              })
+
+          isCompletedCheckbox.addEventListener("click", (e) => {
+              e.stopPropagation();
+          })
+
+          isCompletedCheckbox.addEventListener("change", () => {
+              isCompletedForm.submit();
+          })
+
+
       }
 
       function openOffcanvas(offcanvasId) {
