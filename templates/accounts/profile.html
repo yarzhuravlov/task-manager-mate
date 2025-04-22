@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <!-- User Profile Section -->
+      <div class="col-12 col-md-10 col-lg-8 mx-auto mb-3">
+        <div class="card shadow-sm">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0">User Position</h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-0"><strong>Position:</strong> {{ user.position }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8 mx-auto mb-3">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Profile Information</h5>
+          </div>
+          <div class="card-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+              {{ username_form|crispy }}
+              <button
+                  name="username_form"
+                  type="submit"
+                  class="btn btn-primary w-100">Update Username
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8 mx-auto mb-3">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Change Password</h5>
+          </div>
+          <div class="card-body">
+            <form action="{% url 'password_change' %}" method="GET">
+              {% csrf_token %}
+              <p class="text-muted small">
+                To change your password, you will be redirected to the password
+                change page.
+              </p>
+              <button type="submit" class="btn btn-warning w-100">Go to
+                Password Change Page
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

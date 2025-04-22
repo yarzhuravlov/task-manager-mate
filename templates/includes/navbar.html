@@ -28,6 +28,11 @@
             <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="userDropdown">
               <li>
+                <a class="dropdown-item" href="{% url 'profile' %}">
+                  Profile
+                </a>
+              </li>
+              <li>
                 <form action="{% url 'logout' %}" method="POST"
                       class="d-inline">
                   {% csrf_token %}

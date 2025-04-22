@@ -4,6 +4,7 @@ from accounts.views import (
     ActivateAccountView,
     RegistrationView,
     GoogleAuthReceiverView,
+    ProfileView,
 )
 
 urlpatterns = [
@@ -17,5 +18,10 @@ urlpatterns = [
         "google-auth-receiver",
         GoogleAuthReceiverView.as_view(),
         name="google-auth-receiver",
+    ),
+    path(
+        "profile/",
+        ProfileView.as_view(),
+        name="profile",
     ),
 ]

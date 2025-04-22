@@ -3,6 +3,7 @@ import os
 from typing import Any
 
 from django.contrib.auth import get_user_model, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
@@ -16,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from google.auth.transport import requests
 from google.oauth2 import id_token
 
-from accounts.forms import RegistrationForm
+from accounts.forms import RegistrationForm, UsernameChangeForm
 from accounts.services.emails.registration import send_account_activation_email
 from accounts.tokens import account_activation_token
 from base.utils.core import getattr_or_default
@@ -124,3 +125,30 @@ class GoogleAuthReceiverView(View):
             return HttpResponse(status=403)
 
         return redirect(reverse("tasks:task-list"))
+
+
+class ProfileView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "accounts/profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["username_form"] = getattr_or_default(
+            self,
+            "username_form",
+            UsernameChangeForm(instance=self.request.user),
+        )
+
+        return context
+
+    def post(self, *args, **kwargs):
+        if "username_form" in self.request.POST:
+            username_form = UsernameChangeForm(
+                self.request.POST, instance=self.request.user
+            )
+            if username_form.is_valid():
+                username_form.save()
+            else:
+                self.username_form = username_form
+
+        return super().get(*args, **kwargs)
