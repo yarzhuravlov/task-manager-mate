@@ -121,9 +121,11 @@
     {% csrf_token %}
     <input type="hidden" name="task_id" value="{{ task.id }}">
     <input type="hidden" name="is_completed"
-           value="{{ task.is_completed|yesno:"0,1" }}">
-    <button type="submit"
-            class="btn btn-outline-{% if task.is_completed %}warning{% else %}success{% endif %} w-100">
+           value="{{ task.is_completed|yesno:"off,on" }}">
+    <button
+        name="is_completed_form"
+        type="submit"
+        class="btn btn-outline-{% if task.is_completed %}warning{% else %}success{% endif %} w-100">
       <i class="bi bi-{% if task.is_completed %}arrow-counterclockwise{% else %}check-circle{% endif %}"></i>
       Mark as {% if task.is_completed %}Incomplete{% else %}
       Complete{% endif %}
