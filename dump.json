@@ -1,0 +1,528 @@
+[
+{
+    "model": "workers.position",
+    "pk": 1,
+    "fields": {
+        "name": "CEO"
+    }
+},
+{
+    "model": "workers.position",
+    "pk": 2,
+    "fields": {
+        "name": "Task manager admin"
+    }
+},
+{
+    "model": "workers.position",
+    "pk": 3,
+    "fields": {
+        "name": "QA"
+    }
+},
+{
+    "model": "workers.position",
+    "pk": 4,
+    "fields": {
+        "name": "Python developer"
+    }
+},
+{
+    "model": "workers.position",
+    "pk": 5,
+    "fields": {
+        "name": "Unknown"
+    }
+},
+{
+    "model": "workers.worker",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$zope8B6i9D1t8kiYFOz4mS$BrSK7pBQfAakG7ICvJhJ/GVcgrIw2gPkp6/C6b0nuHQ=",
+        "last_login": "2025-04-11T11:49:03.571Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@email.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-03-27T13:10:36.875Z",
+        "position": 2,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "workers.worker",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$6mevZVeku0spKJXHfLn9SB$ls2LnTa6WbmWGjawvcr554GQ/hTmTLofAuQuGlZO0CE=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "qa_engineer",
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "qa@email.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-03-27T13:33:28.756Z",
+        "position": 3,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "workers.worker",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$kd8k9nRVFyj1N7bjjNtVcP$BIZdkNF3K4lXQtfIUnoRZS0ZZIc4abeeS2yUbzUV83Q=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "qa_developer",
+        "first_name": "Bob",
+        "last_name": "Bobovich",
+        "email": "email1@email.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-03-27T13:42:53.511Z",
+        "position": 3,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "workers.worker",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$870000$upfsD2h3MaispKf6dYLWda$0UN7mHsMWN3ZRNM7iyHTeNUrq7j5INszvoc5bJqgBKY=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "python_developer",
+        "first_name": "Tom",
+        "last_name": "Tomovich",
+        "email": "email2@email.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2025-03-27T13:43:53.686Z",
+        "position": 4,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "tasks.tasktype",
+    "pk": 1,
+    "fields": {
+        "name": "Feature"
+    }
+},
+{
+    "model": "tasks.tasktype",
+    "pk": 2,
+    "fields": {
+        "name": "QA"
+    }
+},
+{
+    "model": "tasks.tasktype",
+    "pk": 3,
+    "fields": {
+        "name": "Refactoring"
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 1,
+    "fields": {
+        "name": "Do 1",
+        "description": "",
+        "created_at": "2025-03-27T14:27:36Z",
+        "deadline": "2025-03-28T18:00:00Z",
+        "is_completed": true,
+        "priority": 2,
+        "task_type": 1,
+        "assigners": [
+            4
+        ]
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 2,
+    "fields": {
+        "name": "Do 2",
+        "description": "",
+        "created_at": "2025-03-27T14:28:05Z",
+        "deadline": "2025-03-28T06:00:00Z",
+        "is_completed": true,
+        "priority": 1,
+        "task_type": 1,
+        "assigners": [
+            5
+        ]
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 4,
+    "fields": {
+        "name": "Fix user authentication issue in the login form",
+        "description": "Users are unable to log in due to incorrect session handling. Investigate and resolve the issue.",
+        "created_at": "2025-03-27T16:05:20Z",
+        "deadline": "2025-03-26T10:08:59Z",
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": [
+            4,
+            5
+        ]
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 5,
+    "fields": {
+        "name": "Resolve 500 error when submitting a contact form",
+        "description": "The contact form throws a server error when users try to submit it. Debug and fix the root cause.",
+        "created_at": "2025-03-27T16:05:20.420Z",
+        "deadline": null,
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 6,
+    "fields": {
+        "name": "Fix incorrect total calculation in the invoice generation module",
+        "description": "Invoices are displaying incorrect total amounts due to rounding issues. Update the calculation logic.",
+        "created_at": "2025-03-27T16:05:20.424Z",
+        "deadline": null,
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 7,
+    "fields": {
+        "name": "Implement dark mode support for the dashboard",
+        "description": "Add a theme toggle feature that allows users to switch between light and dark modes.",
+        "created_at": "2025-03-27T16:05:20Z",
+        "deadline": "2025-04-04T21:09:00Z",
+        "is_completed": false,
+        "priority": 1,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 8,
+    "fields": {
+        "name": "Add email notifications for task assignments",
+        "description": "Send an email notification to workers whenever they are assigned a new task.",
+        "created_at": "2025-03-27T16:05:20Z",
+        "deadline": "2025-04-17T15:10:00Z",
+        "is_completed": false,
+        "priority": 3,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 9,
+    "fields": {
+        "name": "Develop a REST API endpoint for retrieving completed tasks",
+        "description": "Create an API endpoint that returns all completed tasks, filtering by date and priority.",
+        "created_at": "2025-03-27T16:05:20Z",
+        "deadline": "2025-04-05T15:14:00Z",
+        "is_completed": false,
+        "priority": 2,
+        "task_type": 3,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 10,
+    "fields": {
+        "name": "Write API documentation for the user authentication module",
+        "description": "Document how to register, log in, and manage authentication tokens using the API.",
+        "created_at": "2025-03-27T16:05:20.439Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 11,
+    "fields": {
+        "name": "Update README with installation and setup instructions",
+        "description": "Ensure the README includes steps for setting up the project, including dependencies and environment variables.",
+        "created_at": "2025-03-27T16:05:20.443Z",
+        "deadline": null,
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 12,
+    "fields": {
+        "name": "Document the process for running database migrations",
+        "description": "Write clear steps on how to apply database migrations for new team members.",
+        "created_at": "2025-03-27T16:05:20.448Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 13,
+    "fields": {
+        "name": "Review and optimize SQL queries in the reporting module",
+        "description": "Analyze existing queries and optimize them to reduce response time and improve database performance.",
+        "created_at": "2025-03-27T16:05:20.452Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 3,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 14,
+    "fields": {
+        "name": "Refactor the user model to support multiple roles",
+        "description": "Modify the Worker model to allow different roles such as admin, manager, and developer.",
+        "created_at": "2025-03-27T16:05:20.455Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 15,
+    "fields": {
+        "name": "Improve test coverage for the task management system",
+        "description": "Write additional unit and integration tests to cover edge cases in the task assignment system.",
+        "created_at": "2025-03-27T16:05:20.459Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 3,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 16,
+    "fields": {
+        "name": "Write unit tests for the task assignment functionality",
+        "description": "Ensure that assigning tasks to multiple workers works correctly with proper validation.",
+        "created_at": "2025-03-27T16:05:20.463Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 17,
+    "fields": {
+        "name": "Perform UI/UX testing on the mobile version of the app",
+        "description": "Test the web app on different screen sizes and devices to identify usability issues.",
+        "created_at": "2025-03-27T16:05:20.466Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 18,
+    "fields": {
+        "name": "Identify and log issues found during regression testing",
+        "description": "Test the app after recent updates and document any new or recurring issues.",
+        "created_at": "2025-03-27T16:05:20.469Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 19,
+    "fields": {
+        "name": "Upgrade Django to the latest LTS version",
+        "description": "Ensure the project is using a stable and supported Django version by upgrading and testing compatibility.",
+        "created_at": "2025-03-27T16:05:20.472Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 20,
+    "fields": {
+        "name": "Improve caching strategy for frequently accessed API endpoints",
+        "description": "Implement caching mechanisms to optimize response times for frequently accessed data.",
+        "created_at": "2025-03-27T16:05:20.475Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 21,
+    "fields": {
+        "name": "Optimize database indexing for better query performance",
+        "description": "Analyze database indexes and add or modify them to speed up task-related queries.",
+        "created_at": "2025-03-27T16:05:20.479Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 22,
+    "fields": {
+        "name": "Prepare a deployment plan for the new feature release",
+        "description": "Outline the steps needed to deploy the latest features to production with minimal downtime.",
+        "created_at": "2025-03-27T16:05:20.481Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 3,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 23,
+    "fields": {
+        "name": "Conduct a sprint planning meeting with the development team",
+        "description": "Plan upcoming tasks, assign priorities, and discuss potential roadblocks in the next development sprint.",
+        "created_at": "2025-03-27T16:05:20.484Z",
+        "deadline": null,
+        "is_completed": false,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 24,
+    "fields": {
+        "name": "First created task",
+        "description": "",
+        "created_at": "2025-03-28T14:47:01.662Z",
+        "deadline": "2025-03-28T00:00:00Z",
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 25,
+    "fields": {
+        "name": "Second created task",
+        "description": "",
+        "created_at": "2025-03-28T14:47:34.956Z",
+        "deadline": "2025-03-18T00:00:00Z",
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": [
+            3,
+            4
+        ]
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 26,
+    "fields": {
+        "name": "Second created task",
+        "description": "",
+        "created_at": "2025-03-28T14:49:41.708Z",
+        "deadline": "2025-03-18T00:00:00Z",
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 2,
+        "assigners": [
+            3,
+            4
+        ]
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 28,
+    "fields": {
+        "name": "Forth task",
+        "description": "",
+        "created_at": "2025-03-28T15:34:50.050Z",
+        "deadline": "2025-03-28T00:00:00Z",
+        "is_completed": true,
+        "priority": 4,
+        "task_type": 1,
+        "assigners": []
+    }
+},
+{
+    "model": "tasks.task",
+    "pk": 29,
+    "fields": {
+        "name": "Resolve 500 error when submitting a contact form",
+        "description": "Test description for this task",
+        "created_at": "2025-03-31T15:26:43Z",
+        "deadline": "2025-03-26T00:00:00Z",
+        "is_completed": true,
+        "priority": 2,
+        "task_type": 1,
+        "assigners": [
+            3,
+            4
+        ]
+    }
+}
+]

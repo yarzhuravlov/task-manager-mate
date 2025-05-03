@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container mt-5">
+    <div class="jumbotron text-center">
+        <h1 class="display-4">Welcome to Task Manager, Mate!</h1>
+        <p class="lead">
+            Your go-to solution for managing tasks efficiently and
+            collaboratively.
+        </p>
+        <hr class="my-4" />
+        <p>With Task Manager, you can:</p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                Create tasks to keep track of your work.
+            </li>
+            <li class="list-group-item">
+                Assign tasks to other users for better collaboration.
+            </li>
+            <li class="list-group-item">
+                Mark tasks as complete to track progress.
+            </li>
+            <li class="list-group-item">
+                View all tasks created by registered users on the site.
+            </li>
+        </ul>
+        <a
+            class="btn btn-primary btn-lg mt-4"
+            href="{% url 'tasks:task-list' %}"
+            role="button"
+            >View Tasks</a
+        >
+    </div>
+</div>
+
+{% endblock %}

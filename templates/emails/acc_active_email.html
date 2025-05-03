@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Account Activation</title>
+    </head>
+    <body>
+        <p>Hi {{ user.username }},</p>
+        <p>Please click on the link below to confirm your registration:</p>
+        <p>
+            <a href="http://{{ domain }}{% url 'activate' pk=uid token=token %}"
+                >Activate your account</a
+            >
+        </p>
+        <p>
+            If the link doesn't work, copy and paste the following URL into your
+            browser:
+        </p>
+        <p>http://{{ domain }}{% url 'activate' pk=uid token=token %}</p>
+    </body>
+</html>

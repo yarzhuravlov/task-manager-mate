@@ -1,0 +1,26 @@
+{% load crispy_forms_filters %}
+<form
+    action="{% if form_action %}{{ form_action }}{% endif %}"
+    method="{% if form_method %}{{ form_method }}{% else %}post{% endif %}"
+    novalidate
+>
+  {% csrf_token %}
+
+  {% if form_content_html %}
+    {{ form_content_html }}
+  {% endif %}
+
+  {% if form %}
+    {{ form|crispy }}
+  {% endif %}
+
+  {% if form_submit_button %}
+    {{ form_submit_button }}
+  {% else %}
+    <input
+        type="submit"
+        class="btn btn-primary"
+        value="{{ form_submit_value }}"
+        name="{{ form_submit_name }}">
+  {% endif %}
+</form>

@@ -1,0 +1,80 @@
+{% load crispy_forms_filters %}
+<div class="col-12 col-lg-6 col-xl-4 d-flex"
+     hx-get="{% url "tasks:task-detail" pk=task.pk %}"
+     hx-trigger="click"
+     hx-target="#taskOffcanvasBody"
+     hx-swap="innerHtml"
+     _="on htmx:afterRequest wait 10ms then call openOffcanvas('taskOffcanvas')"
+>
+  <div
+      class="card task-card w-100 mb-3 shadow-sm {% if task.is_completed %}bg-light{% endif %}"
+      style="border-left: 4px solid
+          {% if task.priority == 1 %}#dc3545{% elif task.priority == 2 %}#fd7e14{% elif task.priority == 3 %}#ffc107{% else %}#28a745{% endif %};">
+    <div class="card-body p-2">
+      <!-- Task Header with Completion Checkbox -->
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <h5 class="card-title mb-0 text-truncate fs-6 {% if task.is_completed %}text-decoration-line-through text-muted{% endif %}">
+          {{ task.name | truncatechars:35 }}
+        </h5>
+        <form class="is_completed_form" action="" method="POST">
+          {% csrf_token %}
+          {{ task.is_completed_form.task_id }}
+          <div class="form-check form-switch">
+            {{ task.is_completed_form.is_completed }}
+            <input type="hidden" name="is_completed_form">
+          </div>
+        </form>
+      </div>
+
+      <!-- Task Type & Priority Badge -->
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <span class="badge bg-secondary">{{ task.task_type }}</span>
+        <span class="badge
+          {% if task.priority == 1 %}bg-danger
+          {% elif task.priority == 2 %}bg-warning text-dark
+          {% elif task.priority == 3 %}bg-info text-dark
+          {% else %}bg-success{% endif %}">
+          {{ task.get_priority_display }}
+        </span>
+      </div>
+
+      <!-- Description if available -->
+      {% if task.description %}
+        <p class="card-text text-truncate small mb-1 {% if task.is_completed %}text-muted{% endif %}">
+          {{ task.description | truncatechars:60 }}
+        </p>
+      {% endif %}
+
+      <!-- Task Metadata -->
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted">
+          Created: {{ task.created_at|date:"M d" }}
+        </small>
+        {% if task.deadline %}
+          <small
+              class="{% if task.is_completed %}text-muted{% elif task.deadline < now %}text-danger{% else %}text-primary{% endif %}">
+            Due: {{ task.deadline|date:"M d, Y" }}
+          </small>
+        {% endif %}
+      </div>
+
+      <!-- Assigners (if present) -->
+      {% if task.assigners.exists %}
+        <div class="mb-2">
+          <small class="text-muted">Assigned to:</small>
+          <div class="d-flex flex-wrap gap-1 mt-1">
+            {% for user in task.assigners.all|slice:":3" %}
+              <span
+                  class="badge bg-light text-dark border">{{ user.username }}</span>
+            {% endfor %}
+            {% if task.assigners.count > 3 %}
+              <span
+                  class="badge bg-light text-dark border">+{{ task.assigners.count|add:"-3" }}</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</div>
